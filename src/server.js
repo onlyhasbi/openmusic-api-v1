@@ -1,16 +1,30 @@
 require('dotenv').config();
 const Hapi = require('@hapi/hapi');
-const album = require('./api/album');
-const song = require('./api/song');
-const AlbumValidator = require('./validator/album');
-const SongValidator = require('./validator/song');
-const AlbumService = require('./services/postgres/AlbumService');
-const SongService = require('./services/postgres/SongService');
+const Jwt = require('@hapi/jwt');
+
+const albums = require('./api/albums');
+const songs = require('./api/songs');
+const users = require('./api/users');
+const authentications = require('./api/authentications');
+
+const AlbumsValidator = require('./validator/albums');
+const SongsValidator = require('./validator/songs');
+const UsersValidator = require('./validator/users');
+const AuthenticationsValidator = require('./validator/authentications');
+
+const AlbumsService = require('./services/postgres/AlbumsService');
+const SongsService = require('./services/postgres/SongsService');
+const UsersService = require('./services/postgres/UsersService');
+const AuthenticationsService = require('./services/postgres/Authentications');
+
+const TokenManager = require('./tokenize/TokenManager');
 const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
-  const albumService = new AlbumService();
-  const songService = new SongService();
+  const albumsService = new AlbumsService();
+  const songsService = new SongsService();
+  const usersService = new UsersService();
+  const authenticationsService = new AuthenticationsService();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -24,43 +38,82 @@ const init = async () => {
 
   await server.register([
     {
-      plugin: album,
+      plugin: Jwt,
+    },
+  ]);
+
+  server.auth.strategy('openmusic_jwt', 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
+  });
+
+  await server.register([
+    {
+      plugin: users,
       options: {
-        service: albumService,
-        validator: AlbumValidator,
+        service: usersService,
+        validator: UsersValidator,
       },
     },
     {
-      plugin: song,
+      plugin: authentications,
       options: {
-        service: songService,
-        validator: SongValidator,
+        authenticationsService,
+        usersService,
+        tokenManager: TokenManager,
+        validator: AuthenticationsValidator,
+      },
+    },
+    {
+      plugin: albums,
+      options: {
+        service: albumsService,
+        validator: AlbumsValidator,
+      },
+    },
+    {
+      plugin: songs,
+      options: {
+        service: songsService,
+        validator: SongsValidator,
       },
     },
   ]);
 
-  server.ext('onPreResponse', (request, h) => {
-    const { response } = request;
+  server.ext('onPreResponse', ({ response }, h) => {
+    const { message, isServer, statusCode } = response;
+
     if (response instanceof Error) {
       if (response instanceof ClientError) {
         const newResponse = h.response({
           status: 'fail',
-          message: response.message,
+          message: message,
         });
 
-        newResponse.code(response.statusCode);
+        newResponse.code(statusCode);
         return newResponse;
       }
 
-      if (!response.isServer) {
+      if (!isServer) {
         return h.continue;
       }
 
       const newResponse = h.response({
         status: 'fail',
-        message: response.message,
+        message: message,
       });
-      newResponse.code = response.statusCode;
+      newResponse.code(statusCode);
       return newResponse;
     }
 

@@ -1,12 +1,12 @@
-class AlbumHandler {
+class AlbumsHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
   }
 
-  async postAlbumHandler(request, h) {
-    this._validator.validateAlbumPayload(request.payload);
-    const { album_id } = await this._service.addAlbum(request.payload);
+  async postAlbumHandler({ payload }, h) {
+    this._validator.validateAlbumPayload(payload);
+    const { album_id } = await this._service.addAlbum(payload);
     const response = h.response({
       status: 'success',
       data: { albumId: album_id },
@@ -42,4 +42,4 @@ class AlbumHandler {
   }
 }
 
-module.exports = AlbumHandler;
+module.exports = AlbumsHandler;

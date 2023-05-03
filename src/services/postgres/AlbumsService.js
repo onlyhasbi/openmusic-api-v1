@@ -4,7 +4,7 @@ const { defaultDataAlbum } = require('../../utils/defaultData');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const InvariantError = require('../../exceptions/InvariantError');
 
-class AlbumService {
+class AlbumsService {
   constructor() {
     this._pool = new Pool();
   }
@@ -13,10 +13,9 @@ class AlbumService {
     const id = `album-${nanoid(16)}`;
 
     const query = {
-      text: `INSERT INTO album VALUES($1,$2,$3) RETURNING id`,
+      text: `INSERT INTO albums VALUES($1,$2,$3) RETURNING id`,
       values: [id, name, year],
     };
-
     const { rows } = await this._pool.query(query);
 
     if (!rows[0].id) {
@@ -28,7 +27,7 @@ class AlbumService {
 
   async getAlbumById(id) {
     const queryAlbum = {
-      text: `SELECT * FROM album WHERE id=$1`,
+      text: `SELECT * FROM albums WHERE id=$1`,
       values: [id],
     };
 
@@ -39,11 +38,11 @@ class AlbumService {
     }
 
     const querySongs = {
-      text: `SELECT id,title,performer FROM song WHERE "albumId"=$1`,
+      text: `SELECT id,title,performer FROM songs WHERE "albumId"=$1`,
       values: [id],
     };
 
-    const songResult = await this._pool.query('SELECT * FROM song');
+    const songResult = await this._pool.query('SELECT * FROM songs');
     const { rows: songs } = songResult.rows.length
       ? await this._pool.query(querySongs)
       : songResult;
@@ -58,7 +57,7 @@ class AlbumService {
 
   async editAlbumById(id, { name, year }) {
     const query = {
-      text: `UPDATE album set name=$1, year=$2 WHERE id=$3 RETURNING id`,
+      text: `UPDATE albums set name=$1, year=$2 WHERE id=$3 RETURNING id`,
       values: [name, year, id],
     };
 
@@ -71,7 +70,7 @@ class AlbumService {
 
   async deleteAlbumById(id) {
     const query = {
-      text: `DELETE FROM album WHERE id=$1 RETURNING id`,
+      text: `DELETE FROM albums WHERE id=$1 RETURNING id`,
       values: [id],
     };
     const { rows } = await this._pool.query(query);
@@ -81,4 +80,4 @@ class AlbumService {
   }
 }
 
-module.exports = AlbumService;
+module.exports = AlbumsService;

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 exports.up = (pgm) => {
-  pgm.createTable("song", {
+  pgm.createTable("songs", {
     id: { type: "VARCHAR(50)", primaryKey: true },
     title: { type: "TEXT", notNull: true },
     year: { type: "SMALLINT" },
@@ -13,5 +13,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable("song");
+  pgm.dropTable("songs");
 };

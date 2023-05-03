@@ -1,18 +1,38 @@
 {
   "env": {
-    "commonjs": true,
-    "es2021": true,
-    "node": true
+    "browser": true,
+    "node": true,
+    "commonjs": true
   },
-  "extends": ["airbnb-base"],
+  "extends": ["airbnb", "prettier", "plugin:node/recommended"],
+  "plugins": ["prettier"],
+  "overrides": [],
   "parserOptions": {
-    "ecmaVersion": 14
+    "ecmaVersion": "latest"
   },
   "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "func-names": "off",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "class-methods-use-this": "off",
     "no-underscore-dangle": "off",
     "camelcase": "off",
     "quotes": "off",
-    "no-console": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "node/no-unsupported-features/es-syntax": [
+      "error",
+      {
+        "version": ">=8.0.0",
+        "ignores": []
+      }
+    ]
   }
 }

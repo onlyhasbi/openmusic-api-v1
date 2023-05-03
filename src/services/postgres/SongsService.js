@@ -7,7 +7,7 @@ const {
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
-class SongService {
+class SongsService {
   constructor() {
     this._pool = new Pool();
   }
@@ -17,7 +17,7 @@ class SongService {
 
     const id = `song-${nanoid(16)}`;
     const query = {
-      text: `INSERT INTO song VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING id`,
+      text: `INSERT INTO songs VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING id`,
       values: [id, title, year, performer, genre, duration, albumId],
     };
 
@@ -30,7 +30,7 @@ class SongService {
   }
 
   async getSongs({ title, performer }) {
-    const baseQuery = 'SELECT * FROM song';
+    const baseQuery = 'SELECT * FROM songs';
 
     let query = baseQuery;
 
@@ -61,7 +61,7 @@ class SongService {
 
   async getSongById(id) {
     const query = {
-      text: `SELECT * FROM song WHERE id=$1`,
+      text: `SELECT * FROM songs WHERE id=$1`,
       values: [id],
     };
 
@@ -80,7 +80,7 @@ class SongService {
     const { title, year, genre, performer, duration, albumId } = song;
 
     const query = {
-      text: `UPDATE song SET title=$1, year=$2, genre=$3, performer=$4, duration=$5, "albumId"=$6 WHERE id=$7 RETURNING id`,
+      text: `UPDATE songs SET title=$1, year=$2, genre=$3, performer=$4, duration=$5, "albumId"=$6 WHERE id=$7 RETURNING id`,
       values: [title, year, genre, performer, duration, albumId, id],
     };
 
@@ -92,7 +92,7 @@ class SongService {
 
   async deleteSongById(id) {
     const query = {
-      text: `DELETE FROM song WHERE id=$1 RETURNING id`,
+      text: `DELETE FROM songs WHERE id=$1 RETURNING id`,
       values: [id],
     };
 
@@ -104,4 +104,4 @@ class SongService {
   }
 }
 
-module.exports = SongService;
+module.exports = SongsService;
