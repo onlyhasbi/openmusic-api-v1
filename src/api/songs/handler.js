@@ -4,9 +4,9 @@ class SongHandler {
     this._validator = validator;
   }
 
-  async postSongHandler(request, h) {
-    this._validator.validateSongPayload(request.payload);
-    const { songId } = await this._service.addSong(request.payload);
+  async postSongHandler({ payload }, h) {
+    this._validator.validateSongPayload(payload);
+    const { songId } = await this._service.addSong(payload);
     const response = h.response({
       status: 'success',
       data: { songId },
@@ -15,8 +15,8 @@ class SongHandler {
     return response;
   }
 
-  async getSongsHandler(request, h) {
-    const { songs } = await this._service.getSongs(request.query);
+  async getSongsHandler({ query }, h) {
+    const { songs } = await this._service.getSongs(query);
     const response = h.response({
       status: 'success',
       data: { songs },
@@ -25,8 +25,8 @@ class SongHandler {
     return response;
   }
 
-  async getSongByIdHandler(request, h) {
-    const { id } = request.params;
+  async getSongByIdHandler({ params }, h) {
+    const { id } = params;
     const { song } = await this._service.getSongById(id);
     const response = h.response({
       status: 'success',
@@ -36,16 +36,16 @@ class SongHandler {
     return response;
   }
 
-  async editSongByIdHandler(request) {
-    this._validator.validateSongPayload(request.payload);
-    const { id } = request.params;
-    await this._service.editSongById(id, request.payload);
+  async editSongByIdHandler({ payload, params }) {
+    this._validator.validateSongPayload(payload);
+    const { id } = params;
+    await this._service.editSongById(id, payload);
 
     return { status: 'success', message: 'lagu berhasil diperbarui' };
   }
 
-  async deleteSongByIdHandler(request) {
-    const { id } = request.params;
+  async deleteSongByIdHandler({ params }) {
+    const { id } = params;
     await this._service.deleteSongById(id);
 
     return { status: 'success', message: 'lagu berhasil dihapus' };

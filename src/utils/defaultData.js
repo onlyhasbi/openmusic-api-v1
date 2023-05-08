@@ -1,4 +1,4 @@
-const defaultDataAlbum = ({ id, name, year }) => ({
+const defaultDataAlbums = ({ id, name, year }) => ({
   id,
   name,
   year,
@@ -28,4 +28,8 @@ const defaultDataSong = ({
   albumId,
 });
 
-module.exports = { defaultDataAlbum, defaultDataSongs, defaultDataSong };
+module.exports = {
+  defaultDataAlbums,
+  defaultDataSongs,
+  defaultDataSong,
+};

@@ -2,9 +2,10 @@
   "env": {
     "browser": true,
     "node": true,
+    "es2021": true,
     "commonjs": true
   },
-  "extends": ["airbnb", "prettier", "plugin:node/recommended"],
+  "extends": ["airbnb", "prettier"],
   "plugins": ["prettier"],
   "overrides": [],
   "parserOptions": {
@@ -26,13 +27,11 @@
       {
         "endOfLine": "auto"
       }
-    ],
-    "node/no-unsupported-features/es-syntax": [
-      "error",
-      {
-        "version": ">=8.0.0",
-        "ignores": []
-      }
     ]
+  },
+  "settings": {
+    "react": {
+      "version": "999.999.999"
+    }
   }
 }

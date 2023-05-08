@@ -1,6 +1,6 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
-const { defaultDataAlbum } = require('../../utils/defaultData');
+const { defaultDataAlbums } = require('../../utils/defaultData');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const InvariantError = require('../../exceptions/InvariantError');
 
@@ -49,7 +49,7 @@ class AlbumsService {
 
     return {
       album: {
-        ...album.map(defaultDataAlbum)[0],
+        ...album.map(defaultDataAlbums)[0],
         songs: [...songs],
       },
     };
@@ -73,8 +73,8 @@ class AlbumsService {
       text: `DELETE FROM albums WHERE id=$1 RETURNING id`,
       values: [id],
     };
-    const { rows } = await this._pool.query(query);
-    if (!rows.length) {
+    const { rowCount } = await this._pool.query(query);
+    if (!rowCount) {
       throw new NotFoundError('gagal menghapus album. id tidak ditemukan');
     }
   }

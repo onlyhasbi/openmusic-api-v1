@@ -11,6 +11,19 @@ class UsersService {
     this._pool = new Pool();
   }
 
+  async verifyUser(userId) {
+    const query = {
+      text: 'SELECT * FROM users WHERE id=$1',
+      values: [userId],
+    };
+
+    const { rowCount } = await this._pool.query(query);
+
+    if (!rowCount) {
+      throw new NotFoundError('user tidak ditemukan');
+    }
+  }
+
   async verifyUserCredential(username, password) {
     const query = {
       text: 'SELECT id,password FROM users WHERE username=$1 ',
