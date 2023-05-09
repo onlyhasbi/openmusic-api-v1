@@ -8,17 +8,15 @@ exports.up = (pgm) => {
     performer: { type: 'TEXT', notNull: true },
     genre: { type: 'TEXT', notNull: true },
     duration: { type: 'SMALLINT' },
-    albumId: { type: 'VARCHAR(50)' },
+    album_id: {
+      type: 'VARCHAR(50)',
+      references: 'albums',
+      referencesContraintName: 'fk_songs.album_id:albums.id',
+      onDelete: 'cascade',
+    },
   });
-
-  pgm.addConstraint(
-    'songs',
-    'fk_songs.album_id_albums.id',
-    "FOREIGN KEY('albumId') REFERENCES albums(id) ON DELETE CASCADE"
-  );
 };
 
 exports.down = (pgm) => {
-  pgm.dropConstraint('songs', 'fk_songs.album_id_albums.id');
   pgm.dropTable('songs');
 };

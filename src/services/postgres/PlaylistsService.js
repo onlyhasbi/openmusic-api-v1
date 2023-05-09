@@ -77,16 +77,18 @@ class PlaylistsService {
     return rows;
   }
 
-  async deletePlaylist(playlistId) {
+  async deletePlaylist(id) {
     const query = {
-      text: 'DELETE FROM playlists WHERE id = $1',
-      values: [playlistId],
+      text: 'DELETE FROM playlists WHERE id=$1 RETURNING id',
+      values: [id],
     };
 
     const { rowCount } = await this._pool.query(query);
 
     if (!rowCount) {
-      throw new InvariantError('gagal menghapus playlist');
+      throw new NotFoundError(
+        'Gagal menghapus playlist. playlist tidak ditemukan'
+      );
     }
   }
 }

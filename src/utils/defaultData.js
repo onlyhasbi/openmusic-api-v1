@@ -17,7 +17,7 @@ const defaultDataSong = ({
   genre,
   performer,
   duration,
-  albumId,
+  album_id,
 }) => ({
   id,
   title,
@@ -25,7 +25,7 @@ const defaultDataSong = ({
   genre,
   performer,
   duration,
-  albumId,
+  albumId: album_id,
 });
 
 module.exports = {
