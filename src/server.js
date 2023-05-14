@@ -8,6 +8,7 @@ const users = require('./api/users');
 const authentications = require('./api/authentications');
 const playlists = require('./api/playlists');
 const collaborations = require('./api/collaborations');
+const _exports = require('./api/exports');
 
 const AlbumsValidator = require('./validator/albums');
 const SongsValidator = require('./validator/songs');
@@ -15,15 +16,17 @@ const UsersValidator = require('./validator/users');
 const AuthenticationsValidator = require('./validator/authentications');
 const PlaylistsValidator = require('./validator/playlists');
 const CollaborationsValidator = require('./validator/collaborations');
+const ExportsValidator = require('./validator/exports');
 
-const AlbumsService = require('./services/postgres/AlbumsService');
-const SongsService = require('./services/postgres/SongsService');
-const UsersService = require('./services/postgres/UsersService');
-const AuthenticationsService = require('./services/postgres/AuthenticationsService');
-const PlaylistsService = require('./services/postgres/PlaylistsService');
-const PlaylistSongsService = require('./services/postgres/PlaylistSongsService');
-const PlaylistActivities = require('./services/postgres/PlaylistActivities');
-const CollaborationsService = require('./services/postgres/CollaborationsService');
+const AlbumsService = require('./services/postgres/albums');
+const SongsService = require('./services/postgres/songs');
+const UsersService = require('./services/postgres/users');
+const AuthenticationsService = require('./services/postgres/authentications');
+const PlaylistsService = require('./services/postgres/playlists');
+const PlaylistSongsService = require('./services/postgres/playlists/SongsService');
+const PlaylistActivities = require('./services/postgres/playlists/Activities');
+const CollaborationsService = require('./services/postgres/collaborations');
+const ProducersService = require('./services/rabbitmq/producer');
 
 const TokenManager = require('./tokenize/TokenManager');
 const ClientError = require('./exceptions/ClientError');
@@ -118,6 +121,14 @@ const init = async () => {
         playlistsService,
         service: collaborationsService,
         validator: CollaborationsValidator,
+      },
+    },
+    {
+      plugin: _exports,
+      options: {
+        playlistsService,
+        service: ProducersService,
+        validator: ExportsValidator,
       },
     },
   ]);

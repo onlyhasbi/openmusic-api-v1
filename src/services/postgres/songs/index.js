@@ -3,9 +3,9 @@ const { nanoid } = require('nanoid');
 const {
   defaultDataSong,
   defaultDataSongs,
-} = require('../../utils/defaultData');
-const InvariantError = require('../../exceptions/InvariantError');
-const NotFoundError = require('../../exceptions/NotFoundError');
+} = require('../../../utils/defaultData');
+const InvariantError = require('../../../exceptions/InvariantError');
+const NotFoundError = require('../../../exceptions/NotFoundError');
 
 class SongsService {
   constructor() {

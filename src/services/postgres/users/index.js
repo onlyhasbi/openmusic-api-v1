@@ -1,10 +1,10 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
-const InvariantError = require('../../exceptions/InvariantError');
-const NotFoundError = require('../../exceptions/NotFoundError');
-const ClientError = require('../../exceptions/ClientError');
-const AuthenticationError = require('../../exceptions/AuthenticationError');
+const InvariantError = require('../../../exceptions/InvariantError');
+const NotFoundError = require('../../../exceptions/NotFoundError');
+const ClientError = require('../../../exceptions/ClientError');
+const AuthenticationError = require('../../../exceptions/AuthenticationError');
 
 class UsersService {
   constructor() {
